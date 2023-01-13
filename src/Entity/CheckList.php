@@ -14,11 +14,11 @@ class CheckList
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['users:list'])]
+    #[Groups(['users:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['users:list'])]
+    #[Groups(['users:read'])]
     private ?string $name = null;
 
     #[ORM\Column]

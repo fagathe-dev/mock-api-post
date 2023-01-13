@@ -180,4 +180,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getNbCheckLists():int 
+    {
+        return count($this->checkLists);
+    }
 }
