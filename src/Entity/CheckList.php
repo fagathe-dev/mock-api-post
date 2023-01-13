@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\CheckListRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CheckListRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CheckListRepository::class)]
 class CheckList
@@ -13,9 +14,11 @@ class CheckList
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['users:list'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['users:list'])]
     private ?string $name = null;
 
     #[ORM\Column]

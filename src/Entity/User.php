@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -16,12 +17,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['users:list', 'users:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['users:list', 'users:read'])]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['users:list', 'users:read'])]
     private array $roles = [];
 
     /**
@@ -31,12 +35,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['users:list', 'users:read'])]
     private ?string $username = null;
 
     #[ORM\Column]
+    #[Groups(['users:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: CheckList::class, cascade: ['remove', 'persist'])]
+    #[Groups(['users:read'])]
     private Collection $checkLists;
 
     public function __construct()
