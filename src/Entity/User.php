@@ -30,19 +30,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Post::class)]
-    private Collection $posts;
+    #[ORM\Column(length: 50)]
+    private ?string $username = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(length: 100)]
-    private ?string $username = null;
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: CheckList::class, cascade: ['remove', 'persist'])]
+    private Collection $checkLists;
 
     public function __construct()
     {
-        $this->posts = new ArrayCollection();
+        $this->checkLists = new ArrayCollection();
     }
+
+    const ROLES = [
+        'admin' => ['ROLE_ADMIN'],
+        'user' => ['ROLE_USER'],
+        'manager' => ['ROLE_MANAGER']
+    ];
 
     public function getId(): ?int
     {
@@ -114,48 +120,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    /**
-     * @return Collection<int, Post>
-     */
-    public function getPosts(): Collection
-    {
-        return $this->posts;
-    }
-
-    public function addPost(Post $post): self
-    {
-        if (!$this->posts->contains($post)) {
-            $this->posts->add($post);
-            $post->setAuthor($this);
-        }
-
-        return $this;
-    }
-
-    public function removePost(Post $post): self
-    {
-        if ($this->posts->removeElement($post)) {
-            // set the owning side to null (unless already changed)
-            if ($post->getAuthor() === $this) {
-                $post->setAuthor(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
     public function getUsername(): ?string
     {
         return $this->username;
@@ -164,6 +128,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CheckList>
+     */
+    public function getCheckLists(): Collection
+    {
+        return $this->checkLists;
+    }
+
+    public function addCheckList(CheckList $checkList): self
+    {
+        if (!$this->checkLists->contains($checkList)) {
+            $this->checkLists->add($checkList);
+            $checkList->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCheckList(CheckList $checkList): self
+    {
+        if ($this->checkLists->removeElement($checkList)) {
+            // set the owning side to null (unless already changed)
+            if ($checkList->getOwner() === $this) {
+                $checkList->setOwner(null);
+            }
+        }
 
         return $this;
     }
